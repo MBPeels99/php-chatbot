@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot</title>
+    <style>
+        #chat-container {
+            width: 400px;
+            height: 500px;
+            border: 1px solid #ccc;
+            margin: 20px auto;
+            padding: 10px;
+            overflow: auto;
+        }
+        #user-input {
+            width: 400px;
+            margin: 0 auto;
+        }
+        #user-message {
+            width: 80%;
+            padding: 10px;
+        }
+        #send-button {
+            padding: 11px 20px;
+        }
+    </style>
+</head>
+<body>
+    <div id="chat-container"></div>
+    <div id="user-input">
+        <input type="text" id="user-message" placeholder="Type your message here...">
+        <button id="send-button" onclick="sendMessage()">Send</button>
+    </div>
+    <script>
+        function sendMessage() {
+            var message = document.getElementById('user-message').value;
+            var chatContainer = document.getElementById('chat-container');
+            var userMessageDiv = document.createElement('div');
+            userMessageDiv.textContent = 'You: ' + message;
+            chatContainer.appendChild(userMessageDiv);
+            
+            // Send the message to your PHP server here
+            // Example using XMLHttpRequest (you can also use the modern Fetch API)
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', 'chatbot.php', true);
+            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+            xhr.onload = function () {
+                if (xhr.status >= 200 && xhr.status < 400) {
+                    var botMessageDiv = document.createElement('div');
+                    botMessageDiv.textContent = 'Bot: ' + xhr.responseText;
+                    chatContainer.appendChild(botMessageDiv);
+                }
+            };
+            xhr.send('message=' + encodeURIComponent(message));
+            
+            // Clear the user input field
+            document.getElementById('user-message').value = '';
+        }
+    </script>
+</body>
+</html>
